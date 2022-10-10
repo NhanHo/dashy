@@ -10,6 +10,7 @@ import { applyItemId } from '@/utils/SectionHelpers';
 import filterUserSections from '@/utils/CheckSectionVisibility';
 import ErrorHandler, { InfoHandler, InfoKeys } from '@/utils/ErrorHandler';
 import { isUserAdmin } from '@/utils/Auth';
+import { localStorageKeys } from './utils/defaults';
 
 Vue.use(Vuex);
 
@@ -56,9 +57,11 @@ const store = new Vuex.Store({
       return state.config;
     },
     pageInfo(state) {
+      if (!state.config) return {};
       return state.config.pageInfo || {};
     },
     appConfig(state) {
+      if (!state.config) return {};
       return state.config.appConfig || {};
     },
     sections(state) {
@@ -68,7 +71,14 @@ const store = new Vuex.Store({
       return state.remoteConfig.pages || [];
     },
     theme(state) {
-      return state.config.appConfig.theme;
+      let localTheme = null;
+      if (state.currentConfigInfo?.pageId) {
+        const themeStoreKey = `${localStorageKeys.THEME}-${state.currentConfigInfo?.pageId}`;
+        localTheme = localStorage[themeStoreKey];
+      } else {
+        localTheme = localStorage[localStorageKeys.THEME];
+      }
+      return localTheme || state.config.appConfig.theme;
     },
     webSearch(state, getters) {
       return getters.appConfig.webSearch || {};
@@ -97,7 +107,8 @@ const store = new Vuex.Store({
         perms.allowWriteToDisk = false;
       }
       // Disable everything
-      if (appConfig.disableConfiguration) {
+      if (appConfig.disableConfiguration
+        || (appConfig.disableConfigurationForNonAdmin && !isUserAdmin())) {
         perms.allowWriteToDisk = false;
         perms.allowSaveLocally = false;
         perms.allowViewConfig = false;
@@ -140,8 +151,9 @@ const store = new Vuex.Store({
       state.config = config;
     },
     [SET_REMOTE_CONFIG](state, config) {
-      if (!config.appConfig) config.appConfig = {};
-      state.remoteConfig = config;
+      const notNullConfig = config || {};
+      if (!notNullConfig.appConfig) notNullConfig.appConfig = {};
+      state.remoteConfig = notNullConfig;
     },
     [SET_LANGUAGE](state, lang) {
       const newConfig = state.config;
@@ -264,10 +276,13 @@ const store = new Vuex.Store({
       config.sections = applyItemId(config.sections);
       state.config = config;
     },
-    [SET_THEME](state, theme) {
+    [SET_THEME](state, themOps) {
+      const { theme, pageId } = themOps;
       const newConfig = { ...state.config };
       newConfig.appConfig.theme = theme;
       state.config = newConfig;
+      const themeStoreKey = pageId ? `${localStorageKeys.THEME}-${pageId}` : localStorageKeys.THEME;
+      localStorage.setItem(themeStoreKey, theme);
       InfoHandler('Theme updated', InfoKeys.VISUAL);
     },
     [SET_CUSTOM_COLORS](state, customColors) {
@@ -292,6 +307,11 @@ const store = new Vuex.Store({
       state.navigateConfToTab = index;
     },
     [SET_CURRENT_SUB_PAGE](state, subPageObject) {
+      if (!subPageObject) {
+        // Set theme back to primary when navigating to index page
+        const defaulTheme = localStorage.getItem(localStorageKeys.PRIMARY_THEME);
+        if (defaulTheme) state.config.appConfig.theme = defaulTheme;
+      }
       state.currentConfigInfo = subPageObject;
     },
     [USE_MAIN_CONFIG](state) {
@@ -315,7 +335,9 @@ const store = new Vuex.Store({
     async [INITIALIZE_MULTI_PAGE_CONFIG]({ commit, state }, configPath) {
       axios.get(configPath).then((response) => {
         const subConfig = yaml.load(response.data);
+        const pageTheme = subConfig.appConfig?.theme;
         subConfig.appConfig = state.config.appConfig; // Always use parent appConfig
+        if (pageTheme) subConfig.appConfig.theme = pageTheme; // Apply page theme override
         commit(SET_CONFIG, subConfig);
       }).catch((err) => {
         ErrorHandler(`Unable to load config from '${configPath}'`, err);

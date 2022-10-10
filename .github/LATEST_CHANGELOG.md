@@ -1,17 +1,45 @@
-## ✨ 2.0.9 Adds Multi-Page Support [PR #663](https://github.com/Lissy93/dashy/pull/663)
-- Fix KeyCloak API URL (#564)
-- Fix guest has config access (#590)
-- Fix collapsible content in multi-page support (#626)
-- Fix layout and item size buttons ( #629)
-- Refactor make request in RSS widget (#632)
-- Fix material-design-icons header in schema (#640)
-- Add option to hide seconds in clock widget (#644)
-- Fix pageInfo not being read in router (#645)
-- Fix startingView not honored (#646)
-- Fix Status Check default (#651)
-- Add option to hide image in SportsScores Widget (#654)
-- Add Adventure-basic theme (#655)
-- Write docs for sub-items (#657)
-- Add Font-Awesome displaying as square to troubleshooting guide (#659)
-- Show expand / collapse in context menu (#660)
-- Only deploy new release when relevant files have changed
+## ✨ 2.1.1 Improvements [PR #775](https://github.com/Lissy93/dashy/pull/775)
+
+#### Bug Fixes 🐛
+
+- Update APOD widget to use https://apod.as93.net
+  - #745 by @k073l 
+- Fixes theme applying bug (#774)
+
+#### Improvements ⚡️
+
+- Stop status checks when item destroyed
+  - #767 by @marekful
+- Ensure first SSL certificate check finished before second
+  - #760 by @marekful
+- Huge improvement to the way widgets are defined
+  - #758 by @patrickheeney
+
+#### Features ✨
+
+- A set of awesome NextCloud widgets
+  - #740 by @marekful
+- Add Elizabeth + non-underground lines to TFL widget
+  - #766 by @dougaldhub
+- Option to show / hide detailed info for StatPing widget
+  - #714 by @marekful
+- Korean translations
+  - #711 by @boggy-cs
+- Adds option to force ignore widget errors
+
+#### Docs 📕
+
+- Small docs update
+  - #741 by @markusdd 
+- Small docs update
+  - #705 by @pablomalo
+- Adds Dipanghosh's dash to showcase
+
+---
+
+
+Big thanks to the above developers, for their awesome work on this release!  
+
+V 2.1.2 is in the works, and includes an overhaul of how the config is loaded, so stay tuned for that!
+
+And Happy Friday!

@@ -28,7 +28,7 @@ export const sanitize = (string) => {
 export const timestampToDate = (timestamp) => {
   const localFormat = navigator.language;
   const dateFormat = {
-    weekday: 'short', day: 'numeric', month: 'short', year: '2-digit',
+    weekday: 'short', day: 'numeric', month: 'short', year: 'numeric',
   };
   const date = new Date(timestamp).toLocaleDateString(localFormat, dateFormat);
   return `${date}`;
@@ -106,6 +106,18 @@ export const convertBytes = (bytes, decimals = 2) => {
   return `${parseFloat((bytes / (k ** i)).toFixed(decimals))} ${sizes[i]}`;
 };
 
+/* Round a number to thousands, millions, billions or trillions and suffix
+ * with K, M, B or T respectively, e.g. 4_294_967_295 => 4.3B */
+export const formatNumber = (number, decimals = 1) => {
+  if (number > -1000 && number < 1000) return number;
+  const units = ['', 'K', 'M', 'B', 'T'];
+  const k = 1000;
+  const i = Math.floor(Math.log(number) / Math.log(k));
+  const f = parseFloat(number / (k ** i));
+  const d = f.toFixed(decimals) % 1.0 === 0 ? 0 : decimals; // number of decimals, omit .0
+  return `${f.toFixed(d)}${units[i]}`;
+};
+
 /* Round price to appropriate number of decimals */
 export const roundPrice = (price) => {
   if (Number.isNaN(price)) return price;
@@ -133,16 +145,18 @@ export const getTimeDifference = (startTime, endTime) => {
   if (diff < 3600) return `${divide(diff, 60)} minutes`;
   if (diff < 86400) return `${divide(diff, 3600)} hours`;
   if (diff < 604800) return `${divide(diff, 86400)} days`;
-  if (diff >= 604800) return `${divide(diff, 604800)} weeks`;
+  if (diff < 31557600) return `${divide(diff, 604800)} weeks`;
+  if (diff >= 31557600) return `${divide(diff, 31557600)} years`;
   return 'unknown';
 };
 
 /* Given a timestamp, return how long ago it was, e.g. '10 minutes' */
 export const getTimeAgo = (dateTime) => {
   const now = new Date().getTime();
+  const isHistorical = new Date(dateTime).getTime() < now;
   const diffStr = getTimeDifference(dateTime, now);
   if (diffStr === 'unknown') return diffStr;
-  return `${diffStr} ago`;
+  return isHistorical ? `${diffStr} ago` : `in ${diffStr}`;
 };
 
 /* Given the name of a CSS variable, returns it's value */

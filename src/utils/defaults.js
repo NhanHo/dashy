@@ -120,6 +120,7 @@ module.exports = {
     COLLAPSE_STATE: 'collapseState',
     ICON_SIZE: 'iconSize',
     THEME: 'theme',
+    PRIMARY_THEME: 'primaryTheme',
     CUSTOM_COLORS: 'customColors',
     CONF_SECTIONS: 'confSections',
     CONF_WIDGETS: 'confSections',
@@ -135,7 +136,7 @@ module.exports = {
   },
   /* Key names for cookie identifiers */
   cookieKeys: {
-    AUTH_TOKEN: 'authenticationToken',
+    AUTH_TOKEN: 'dashyAuthToken',
   },
   /* Key names for session storage identifiers */
   sessionStorageKeys: {
@@ -205,25 +206,26 @@ module.exports = {
   /* The URL to CDNs used for external icons. These are only loaded when required */
   iconCdns: {
     fa: 'https://kit.fontawesome.com',
-    mdi: 'https://cdn.jsdelivr.net/npm/@mdi/font@5.9.55/css/materialdesignicons.min.css',
-    si: 'https://unpkg.com/simple-icons@v5/icons',
+    mdi: 'https://cdn.jsdelivr.net/npm/@mdi/font@7.0.96/css/materialdesignicons.min.css',
+    si: 'https://unpkg.com/simple-icons@v7/icons',
     generative: 'https://avatars.dicebear.com/api/identicon/{icon}.svg',
     generativeFallback: 'https://evatar.io/{icon}',
     localPath: './item-icons',
     faviconName: 'favicon.ico',
-    homeLabIcons: 'https://raw.githubusercontent.com/walkxhub/dashboard-icons/master/png/{icon}.png',
+    homeLabIcons: 'https://raw.githubusercontent.com/walkxcode/dashboard-icons/master/png/{icon}.png',
     homeLabIconsFallback: 'https://raw.githubusercontent.com/NX211/homer-icons/master/png/{icon}.png',
   },
   /* API endpoints for widgets that need to fetch external data */
   widgetApiEndpoints: {
     anonAddy: 'https://app.anonaddy.com',
-    astronomyPictureOfTheDay: 'https://apodapi.herokuapp.com/api',
+    astronomyPictureOfTheDay: 'https://go-apod.herokuapp.com/apod',
     blacklistCheck: 'https://api.blacklistchecker.com/check',
     codeStats: 'https://codestats.net/',
     covidStats: 'https://disease.sh/v3/covid-19',
     cryptoPrices: 'https://api.coingecko.com/api/v3/coins/',
     cryptoWatchList: 'https://api.coingecko.com/api/v3/coins/markets/',
     cveVulnerabilities: 'https://www.cvedetails.com/json-feed.php',
+    domainMonitor: 'https://api.whoapi.com',
     ethGasPrices: 'https://ethgas.watch/api/gas',
     ethGasHistory: 'https://ethgas.watch/api/gas/trend',
     exchangeRates: 'https://v6.exchangerate-api.com/v6/',
@@ -241,7 +243,7 @@ module.exports = {
     rssToJson: 'https://api.rss2json.com/v1/api.json',
     sportsScores: 'https://www.thesportsdb.com/api/v1/json',
     stockPriceChart: 'https://www.alphavantage.co/query',
-    tflStatus: 'https://api.tfl.gov.uk/line/mode/tube/status',
+    tflStatus: 'https://api.tfl.gov.uk/line/mode/dlr,elizabeth-line,overground,tram,tube/status',
     walletBalance: 'https://api.blockcypher.com/v1',
     walletQrCode: 'https://www.bitcoinqrcodemaker.com/api',
     weather: 'https://api.openweathermap.org/data/2.5/weather',

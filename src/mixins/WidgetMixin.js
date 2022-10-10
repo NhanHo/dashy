@@ -20,7 +20,7 @@ const WidgetMixin = {
     overrideUpdateInterval: null,
     disableLoader: false, // Prevent ever showing the loader
     updater: null, // Stores interval
-    defaultTimeout: 10000,
+    defaultTimeout: 50000,
   }),
   /* When component mounted, fetch initial data */
   mounted() {
@@ -74,7 +74,9 @@ const WidgetMixin = {
     /* Called when an error occurs. Logs to handler, and passes to parent component */
     error(msg, stackTrace) {
       ErrorHandler(msg, stackTrace);
-      this.$emit('error', msg);
+      if (!this.options.ignoreErrors) {
+        this.$emit('error', msg);
+      }
     },
     /* When a data request update starts, show loader */
     startLoading() {
